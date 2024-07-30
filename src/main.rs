@@ -46,10 +46,44 @@
 
 // &str is immutable, but String is mutable
 
-fn main() {
-    let mut string: String = String::from("This is an immutable sentence");
-    println!("{}", string);
+// fn main() {
+//     let mut string: String = String::from("This is an mutable sentence");
+//     println!("{}", string);
 
-    string.push_str("Yup Yup");
-    println!("New ,{}", string);
+//     string.push_str(" Yup Yup");
+//     println!("New ,{}", string);
+// }
+
+// July 30th . Started Tuple Data Type
+
+// fn main() {
+//     let emp_info: (u8, bool, &str) = (12, true, "Lokesh");
+
+//     // destructuring
+
+//     let (age, status, name) = emp_info;
+
+//     println!("Details = {} , {}, {}", age, status, name);
+// }
+
+// Write a program to add two numbers
+
+fn add(a: &mut i32, b: &mut i32) -> i32 {
+    let mut result: i32 = *a + *b;
+    println!("Result before values were modified {}", result);
+
+    *a += 2;
+    *b += 2;
+
+    result = *a + *b;
+    println!("Result after values were modified {}", result);
+
+    return result;
+}
+
+fn main() {
+    let mut a = 12;
+    let mut b = 18;
+
+    let _res = add(&mut a, &mut b);
 }
