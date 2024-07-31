@@ -68,22 +68,57 @@
 
 // Write a program to add two numbers
 
-fn add(a: &mut i32, b: &mut i32) -> i32 {
-    let mut result: i32 = *a + *b;
-    println!("Result before values were modified {}", result);
+// fn add(a: &mut i32, b: &mut i32) -> i32 {
+//     let mut result: i32 = *a + *b;
+//     println!("Result before values were modified {}", result);
 
-    *a += 2;
-    *b += 2;
+//     *a += 2;
+//     *b += 2;
 
-    result = *a + *b;
-    println!("Result after values were modified {}", result);
+//     result = *a + *b;
+//     println!("Result after values were modified {}", result);
 
-    return result;
-}
+//     return result;
+// }
+
+// fn main() {
+//     let mut a = 12;
+//     let mut b = 18;
+
+//     let _res = add(&mut a, &mut b);
+// }
+
+// fn main() {
+//     // copy_numbers();
+//     // copy_string();
+// }
+
+// fn copy_numbers() {
+//     let a = 100;
+//     let b = a;
+//     println!("a is {}", a);
+//     println!("b is {}", b);
+// }
+
+// fn copy_string() {
+//     let s1 = String::from("Hello");
+//     let s2 = s1;
+//     println!("s1 is {}", s1);
+//     println!("s2 is {}", s2);
+// }
+
+// In RUST, whenever we use a dynamic memory paradigm, (like in this case, String uses the heap memory unlike the normal integer which uses stack memory), and assign the value of a variable to a different variable, there is a transfer of onwership , as there can only be one owner of a value. Now if like in this example, we try to access s1 after transfer of ownership, it shows an error as s1 is now invalidated.
+
+// Ownership of Functions
 
 fn main() {
-    let mut a = 12;
-    let mut b = 18;
+    let x = String::from("Sparsh");
+    let x = process_integer(x); // Now ownership of x is transferred to function process_integer, and hence x is invalidated now. So if we try the following statement, it will give an error
 
-    let _res = add(&mut a, &mut b);
+    println!("Value of x in main {}", x);
+}
+
+fn process_integer(x: String) -> String {
+    println!("Value of x in process_integer {}", x);
+    x
 }
