@@ -111,14 +111,74 @@
 
 // Ownership of Functions
 
-fn main() {
-    let x = String::from("Sparsh");
-    let x = process_integer(x); // Now ownership of x is transferred to function process_integer, and hence x is invalidated now. So if we try the following statement, it will give an error
+// fn main() {
+//     let x = String::from("Sparsh");
+//     process_integer(x); // Now ownership of x is transferred to function process_integer, and hence x is invalidated now. So if we try the following statement, it will give an error
 
-    println!("Value of x in main {}", x);
+//     // println!("Value of x in main {}", x);
+// }
+
+// fn process_integer(x: String) {
+//     println!("Value of x in process_integer {}", x);
+// }
+
+// fn main() {
+//     let s1: String = get_string();
+//     println!("This is s1 {}", s1); // s1 gets the ownership of new_string variable
+
+//     let s2: String = String::from("world");
+//     let s3: String = send_get_string(s2); // Now s2 has relinquished the ownership as it is being transferred to s3 over here
+
+//     println!("This is s3 {}", s3);
+
+//     let s4 = get_string();
+//     println!("Here is s4 {}",s4);
+
+//     let s4 = get_string();
+//     println!("Here is s5 {}",s5);
+
+// }
+
+// fn get_string() -> String {
+//     let new_string = String::from("Hello"); // new_string owns "Hello"
+//     return new_string; // Ownership of new_string is returned
+// }
+
+// fn send_get_string(received_string: String) -> String {
+//     return received_string; // Onwership of received_string returned
+// }
+
+// fn main() {
+//     let s1: String = String::from("hello");
+//     let (s2, len) = calculate_length(s1);
+//     println!("The string and its length {} {}", s2, len);
+// }
+
+// fn calculate_length(s: String) -> (String, usize) {
+//     let length = s.len();
+//     (s, length)
+// }
+
+// In this example, since ownership will be transferred from s1 to s, we transfer the ownership back by modifying what we return from the function. This is a tedious method
+
+// This is a much better way. Here we pass the reference to the String, which doesnt transfer the ownership, but also allows read-only operations on the said argument. This is the concept of borrowing.
+
+fn main() {
+    let s1: String = String::from("Siddharamaiya");
+    let mut s2: String = String::from("Drake");
+    let length = calculate_length(&s1);
+    println!("Here is the length of s1 {}", length);
+    let another_length = manipulate_length(&mut s2);
+    println!("Here is the length of s2 {} {}", another_length, s1);
 }
 
-fn process_integer(x: String) -> String {
-    println!("Value of x in process_integer {}", x);
-    x
+fn calculate_length(s: &String) -> usize {
+    let length = s.len();
+    length
+}
+
+fn manipulate_length(s: &mut String) -> usize {
+    s.push_str("Amother One");
+    let length: usize = s.len();
+    length
 }
