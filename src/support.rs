@@ -162,3 +162,202 @@ pub fn manipulate_length(s: &mut String) -> usize {
 // So basically we can have as many immutable references to a variable as possible, so long as there is no mutable reference to the same variable.
 
 // Also we can have only one mutable reference to a variable, but while it is there, there should be no immutable reference to the same variable.
+
+// Attempting to borrow mutable reference
+
+pub fn borrow_mutable_reference() {
+    let mut str = String::from("Hello");
+    append_string(&mut str);
+    println!("New changed string {}", str);
+}
+
+pub fn append_string(str: &mut String) {
+    str.push_str(" World");
+}
+
+// How is this not an error, isnt there atmost one mutable reference allowed for a variable
+
+pub fn possible_error_or_not() {
+    let mut s = String::from("Hello");
+    let ref_1 = &mut s;
+    println!("Ref 1 {}", ref_1);
+    let ref_2 = &mut s;
+    println!("Ref 2 {}", ref_2);
+}
+
+// The above code will not give an error because before a new mutable reference is assigned to ref_2, ref_1 has already gone out of scope. So within a given scope, there still is only 1 mutable reference. However the following code gives error for the same reason, its just that ref_1 hasnt gone out of scope and we have assigned another mutable reference as ref_2, creating an error.
+
+// pub fn definitely_an_error() {
+//     let mut s = String::from("Hello");
+//     let ref_1 = &mut s;
+//     let ref_2 = &mut s;
+
+//     println!("Ref 1 {}", ref_1);
+//     println!("Ref 2 {}", ref_2);
+// }
+
+pub fn address_and_references() {
+    let x = 32;
+    println!("Here is the value of x {}", x);
+    let y = &x;
+    println!("Here is the value referenced in y {}", y);
+    println!("Here is the address y refers to {:p}", y);
+}
+
+pub fn auto_dereferencing() {
+    let x = 32;
+    let y = &x;
+
+    println!("Here is the value of x {}", x);
+    println!("Here is the auto dereferenced value of y {}", y); // Note that over here, technically y has the address of x, not its value. Still when we run the above print statement, RUST auto-dereferences for us. This is the concept of auto dereferencing.
+}
+
+// Following example is just an illustration of the potential error that will occur if we resemble the code written over here.
+
+pub fn auto_dereferencing_example() {
+    let s1 = String::from("hello");
+    let length = calculate_auto_dereferenced_length(&s1);
+    println!("Here is the auto dereferenced length {} ", length);
+}
+
+pub fn calculate_auto_dereferenced_length(s: &String) -> usize {
+    // return *s.len();   This gives an error, because s.len() is eavluated first, due to which s.len() becomes 5 (for hello). Now the * operator comes in, and now it infers that you are dereferencing a number 5, which is not correct.
+
+    // However doing this in the following manner doesnt allow for an error due to operator precedence
+
+    return (*s).len();
+}
+
+// Dangling Reference.
+
+// In RUST, when we return a reference to a variable (local variable) from a function, that reference becomes invalid as soon as the function exists because the local variable is dropped when the function scope ends. This results in a dangling reference, which points to a memory location that has been freed. Due to this concept, the following code gives an error and an undefined behaviour.
+
+// pub fn dangling_reference() {
+//     let reference = create_string_reference();
+//     println!("Here is the string reference {}", reference);
+// }
+
+// pub fn create_string_reference() -> &String {
+//     let s: String = String::from("hello");
+//     return &s;
+// }
+
+// Array in RUST
+
+pub fn array_introduction() {
+    // let arr1:[u8;5]; ----  Array declaration
+    let mut arr1;
+    arr1 = [1, 2, 3, 4, 5];
+
+    println!("Here is your array {:?}", arr1); // You cannot print an array with using simply {}
+    arr1[2] = 69;
+    println!("Here is the changed array {:?}", arr1);
+}
+
+// Pasing array as an argument to a function.
+
+/* Here are the problems with the following code
+
+1. Arrays in RUST are immutable and fixed in size by default when passed to a function. So if we want to modify or mutate an array, we can't pass it directly. Instead, we need to pass a mutable reference of that array to the said function.
+
+2. Also when we pass an entire array to a function, it is passed by value, and we cannot alter the original array, so a copy is made. So in short we need to use mutable reference to alter the said original array
+*/
+
+// pub fn playing_with_array() {
+//     let arr: [&str; 4] = ["John", "Kevin", "Bruce", "Robert"];
+//     write_array(arr);
+//     println!("After function was called, {:?}", arr);
+// }
+
+// pub fn write_array(arr: [&str; 4]) {
+//     arr[0] = "Karter";
+//     println!("Array inside write_array() {:?}", arr);
+// }
+
+// Here is the corrected version of the said code
+
+pub fn playing_with_array() {
+    let arr: [&str; 4] = ["John", "Kevin", "Bruce", "Robert"];
+    println!("Original array {:?}", arr);
+    write_array(arr);
+    println!("After function was called, {:?}", arr);
+}
+
+pub fn write_array(mut arr: [&str; 4]) {
+    arr[0] = "Karter";
+}
+
+// Second example
+
+pub fn second_game() {
+    let arr: [u8; 3] = [1, 2, 4];
+    write_number(arr);
+    println!("Inside second_game() = {:?}", arr);
+    println!("Its address {:p} ", &arr);
+}
+
+pub fn write_number(mut arr: [u8; 3]) {
+    arr[2] = 3;
+    println!("Inside write_number() {:?}", arr);
+    println!("Its address {:p} ", &arr);
+}
+
+// arr inside the write_number and the second_game function are entirely different. arr's copy is passed inside the write_number function, not arr itself.
+
+// Btw for the playing_with_array(), this code works the same as the above code
+
+// pub fn playing_with_array() {
+//     let arr: [&str; 4] = ["John", "Kevin", "Bruce", "Robert"];
+//     println!("Original array {:?}", arr);
+//     write_array(arr);
+//     println!("After function was called, {:?}", arr);
+// }
+
+// pub fn write_array(mut arr: [&str; 4]) {
+//     arr[0] = "Karter";
+// }
+
+// Here is a more optimised way of doing what was being done in playing_with_array()
+
+pub fn optimised_playing_with_array() {
+    let mut arr: [&str; 4] = ["Tom", "Dick", "Harry", "Kayden"];
+    println!("Inside optimised_playing_with_array() array is {:#?} and its address is {:p} before being passed to optimised_write()",arr,&arr);
+    optimised_write(&mut arr);
+}
+
+pub fn optimised_write(arr: &mut [&str; 4]) {
+    println!(
+        "Inside optimised_write() array is {:#?} and its address is {:p} before being changed",
+        arr, &arr
+    );
+    arr[0] = "Tony";
+    println!(
+        "Inside optimised_write() array is {:#?} and its address is {:p} after being changed",
+        arr, &arr
+    );
+}
+
+// Dynamic Arrays or Vectors
+
+pub fn dynamic_array() {
+    let mut v: Vec<i32> = Vec::new();
+
+    /*  Another way to declare the vector
+
+    let mut vec = Vec::<i32>::new();
+
+    */
+    v.push(1);
+    v.push(2);
+    v.push(3);
+    v.push(4);
+
+    /*
+    Initialising with a set of values
+
+     let v = vec![1,2,3,4,5];
+
+     */
+
+    println!("Here is the dynamic array after insertion {:?}", v);
+}
