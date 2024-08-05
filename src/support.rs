@@ -361,3 +361,96 @@ pub fn dynamic_array() {
 
     println!("Here is the dynamic array after insertion {:?}", v);
 }
+
+// The following code will give an error for the reasons of ownership
+
+// pub fn playing_with_vectors() {
+//     let vrr: Vec<&str> = vec!["Hello", "World", "Coders"];
+//     write_vrr(vrr);
+//     println!("Here is vrr {:?}", vrr);
+// }
+
+// pub fn write_vrr(vrr: Vec<&str>) {
+//     println!("Inside write vector {:?}", vrr);
+// }
+
+// Shadowing
+
+pub fn shadowing() {
+    let a = 23;
+    let a = "Hello";
+    let a = a.len();
+
+    println!("Here is a {}", a);
+
+    /*
+
+    We cannot do something like
+
+    let a = 32;
+    a = "Hello";
+
+    This will give an error
+
+     */
+}
+
+// Control Flow Statements
+
+pub fn control_flow() {
+    let number = 17;
+    if number >= 18 {
+        println!("You can vote");
+    } else if number >= 16 && number < 18 {
+        println!("You can vote under provision");
+    } else if number < 16 {
+        println!("You cannot vote");
+    }
+}
+
+pub fn loops() {
+    /* loop {
+        println!("Hello Sparsh");
+    }  ---- Infinite Loop*/
+
+    let mut c = 0;
+    while c < 11 {
+        println!("C {}", c);
+        c += 1;
+    }
+
+    /* for i in 0..10 {
+        println!("i {}", i);
+    }   --- Here 10 is excluded */
+
+    /* for i in 0..=10 {
+        println!("i {}", i);
+    }   --- Here 10 is included */
+}
+
+// Analogue of switch case, except fall through absolutely does not occur
+pub fn matching_cases() {
+    let number = 1;
+    match number {
+        1 => println!("Number is One"),
+        2 => println!("Number is Two"),
+        3 => println!("Number is Three"),
+        _ => println!("Whoa !"),
+    }
+}
+
+pub enum Message {
+    Quit,
+    ChangeColor(i32, i32, i32),
+    Move { x: i32, y: i32 },
+    Write(String),
+}
+
+pub fn match_enum(message: Message) {
+    match message {
+        Message::Quit => println!("Quit message"),
+        Message::ChangeColor(r, g, b) => println!("Change color to R:{} G:{} B:{}", r, g, b),
+        Message::Move { x, y } => println!("Move to x:{} y:{}", x, y),
+        Message::Write(text) => println!("Write message: {}", text),
+    }
+}

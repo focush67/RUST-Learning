@@ -1,5 +1,5 @@
 mod support;
-
+// use support::*; In case you get bored of the support:: ___ syntax
 fn main() {
     // support::shadowing_and_scope();
     // support::mutability_and_dereferencing()
@@ -26,5 +26,21 @@ fn main() {
     // support::playing_with_array()
     // support::second_game();
     // support::optimised_playing_with_array();
-    support::dynamic_array()
+    // support::dynamic_array()
+
+    // support::shadowing()
+    // support::control_flow()
+    // support::loops();
+
+    // support::matching_cases()
+
+    let quit_message = support::Message::Quit;
+    let color_change = support::Message::ChangeColor(255, 0, 0);
+    let move_message = support::Message::Move { x: 10, y: 20 };
+    let write_message = support::Message::Write(String::from("Aur vedhiya"));
+
+    support::match_enum(quit_message);
+    support::match_enum(color_change);
+    support::match_enum(move_message);
+    support::match_enum(write_message);
 }
