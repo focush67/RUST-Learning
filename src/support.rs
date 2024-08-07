@@ -1,5 +1,7 @@
 #![allow(unused_variables, dead_code)]
 
+use std::io; // For I/O Purposes
+
 pub fn issue_greeting(name: &str) -> String {
     format!("Hello {} ", name)
 }
@@ -429,15 +431,6 @@ pub fn loops() {
 }
 
 // Analogue of switch case, except fall through absolutely does not occur
-pub fn matching_cases() {
-    let number = 1;
-    match number {
-        1 => println!("Number is One"),
-        2 => println!("Number is Two"),
-        3 => println!("Number is Three"),
-        _ => println!("Whoa !"),
-    }
-}
 
 pub enum Message {
     Quit,
@@ -452,5 +445,145 @@ pub fn match_enum(message: Message) {
         Message::ChangeColor(r, g, b) => println!("Change color to R:{} G:{} B:{}", r, g, b),
         Message::Move { x, y } => println!("Move to x:{} y:{}", x, y),
         Message::Write(text) => println!("Write message: {}", text),
+    }
+}
+
+pub fn matching_cases() {
+    let number = 1;
+    match number {
+        1 => println!("Number is One"),
+        2 => println!("Number is Two"),
+        3 => println!("Number is Three"),
+        _ => println!("Whoa !"),
+    }
+}
+
+pub fn matching_range(number: i32) {
+    match number {
+        1..=5 => println!("Between 1 to 5"),
+        6..11 => println!("Between 6 to 10"),
+        _ => println!("Outside the range"),
+    }
+}
+
+pub enum Command {
+    Start(u32),
+    Stop(String),
+    Pause,
+    Resume(u32, u32),
+}
+
+pub fn matching_enum(command: Command) {
+    match command {
+        Command::Start(id) => println!("Start Command Launched with ID {}", id),
+        Command::Pause => println!("Pause Command Launched"),
+        Command::Resume(x, y) => println!("Resume Command Launched at coordinates {} {}", x, y),
+        Command::Stop(reason) => println!("Stop Command Launched due to reason {}", reason),
+    }
+}
+
+pub enum Shape {
+    Circle(f64),
+    Rectangle(f64, f64),
+}
+
+pub fn returning_from_enum(shape: Shape) -> f64 {
+    match shape {
+        Shape::Circle(radius) => return 3.14 * radius * radius,
+        Shape::Rectangle(length, breadth) => return 2.0 * (length + breadth),
+    }
+}
+
+/* In RUST, struct fields are private by default due to which we need tp add pub to the items in the struct as well. So if the struct is public, it doesn't mean that the items inside the struct are public as well. They have to be made public
+
+
+Contrary to this, in Enums, if the Enum if public, all its items are automatically made public
+
+*/
+pub struct Point {
+    pub x: i32,
+    pub y: i32,
+}
+
+pub fn matching_from_struct(point: Point) {
+    match point {
+        Point { x: 0, y: 0 } => println!("Origin Point"),
+        Point { x, y } if x == y => println!("Belongs on a line x = y : x = {}, y = {}", x, y),
+        Point { x, y } => println!("Point at x {} y {} ", x, y),
+    }
+}
+
+pub fn matching_with_guards(value: i32) {
+    match value {
+        x if x < 0 => println!("Negative Number {}", x),
+        x if x == 0 => println!("Zero"),
+        x if x > 0 => println!("Positive Number {}", x),
+        _ => println!("Number is beyond comprehension"),
+    }
+}
+
+pub fn match_option(opt: Option<i32>) {
+    match opt {
+        Some(value) => println!("Got a value {}", value),
+        None => println!("No value found"),
+    }
+}
+
+// Taking User Inputs through IO Module
+
+pub fn user_inputs() {
+    let mut input = String::new();
+    println!("Enter a string");
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to readline");
+
+    let trimmed_input = input.trim();
+    println!("You entered {}", trimmed_input);
+}
+
+pub fn another_user_input() {
+    let mut input = String::new();
+    println!("Enter a number");
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to readline");
+
+    let number: i32 = input.trim().parse().expect("Please enter a number");
+
+    println!("You entered number {}", number);
+}
+
+// The following function doesnt throw an error, it is a graceful way of handling errors.
+pub fn handling_panics() {
+    let mut input = String::new();
+    println!("Enter a number");
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Faled to read number");
+
+    let number: Result<i32, _> = input.trim().parse();
+    match number {
+        Ok(n) => println!("You entered {} ", n),
+        Err(_) => println!("Some error occured"),
+    }
+}
+
+pub fn loop_until_correct() {
+    loop {
+        let mut input = String::new();
+        println!("Enter a number");
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Faled to read number");
+
+        let number: Result<i32, _> = input.trim().parse();
+        match number {
+            Ok(n) => {
+                println!("You entered {} ", n);
+                break;
+            }
+            Err(_) => println!("Enter a number dude"),
+        }
     }
 }
